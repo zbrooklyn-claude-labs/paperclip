@@ -26,8 +26,8 @@ classifiers = [
 dependencies = []
 
 [project.urls]
-Homepage = "https://github.com/clockwork-os/paperclip"
-Source = "https://github.com/clockwork-os/paperclip"
+Homepage = "https://github.com/zbrooklyn-claude-labs/paperclip"
+Source = "https://github.com/zbrooklyn-claude-labs/paperclip"
 
 [project.scripts]
 paperclip = "paperclip:main"

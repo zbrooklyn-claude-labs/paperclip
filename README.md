@@ -6,7 +6,7 @@ A lightweight, SQLite-backed control plane for managing autonomous agent operati
 
 Ported from [paperclipai/paperclip](https://github.com/paperclipai/paperclip) (Node.js + PostgreSQL) to Python + SQLite for zero-dependency local use.
 
-Designed as the control-plane engine for [Clockwork](https://github.com/clockwork-os/clockwork) but fully usable standalone.
+Designed as the control-plane engine for [Clockwork](https://github.com/zbrooklyn-claude-labs/clockwork) but fully usable standalone.
 
 ## Install
 
@@ -20,7 +20,7 @@ paperclip init
 ### From source
 
 ```bash
-git clone https://github.com/clockwork-os/paperclip
+git clone https://github.com/zbrooklyn-claude-labs/paperclip
 cd paperclip
 pip install -e .
 paperclip init
@@ -126,7 +126,7 @@ cd engines/paperclip
 git init
 git add .
 git commit -m "init: paperclip standalone repo"
-gh repo create clockwork-os/paperclip --public --source . --push
+gh repo create zbrooklyn-claude-labs/paperclip --public --source . --push
 ```
 
 After publishing, downstream consumers (Clockwork and others) can `pip install paperclip-ops` instead of referencing the in-tree path.
