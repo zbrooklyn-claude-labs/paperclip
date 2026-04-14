@@ -1,8 +1,38 @@
 # Paperclip — SQLite Control Plane Engine
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+
 A lightweight, SQLite-backed control plane for managing autonomous agent operations. Tracks issues, budgets, agents, goals, approvals, and routines through a single Python CLI.
 
 Ported from [paperclipai/paperclip](https://github.com/paperclipai/paperclip) (Node.js + PostgreSQL) to Python + SQLite for zero-dependency local use.
+
+Designed as the control-plane engine for [Clockwork](https://github.com/clockwork-os/clockwork) but fully usable standalone.
+
+## Install
+
+### pip install (after the repo is extracted)
+
+```bash
+pip install paperclip-ops
+paperclip init
+```
+
+### From source
+
+```bash
+git clone https://github.com/clockwork-os/paperclip
+cd paperclip
+pip install -e .
+paperclip init
+```
+
+### Zero-install (just run the script)
+
+The CLI has zero runtime deps beyond Python 3.10+:
+
+```bash
+python paperclip.py init
+```
 
 ## Quick Start
 
@@ -86,3 +116,21 @@ Faithfully ports Paperclip's PostgreSQL backend patterns to SQLite:
 - Config versioning
 
 See `shared/contracts/briefing-provider-v1.md` for the consumer contract.
+
+## Extracting to a standalone repo
+
+This directory is already self-contained (paperclip.py + schema.sql + pyproject.toml + README + LICENSE). To publish it as its own repo:
+
+```bash
+cd engines/paperclip
+git init
+git add .
+git commit -m "init: paperclip standalone repo"
+gh repo create clockwork-os/paperclip --public --source . --push
+```
+
+After publishing, downstream consumers (Clockwork and others) can `pip install paperclip-ops` instead of referencing the in-tree path.
+
+## License
+
+MIT — see [LICENSE](./LICENSE).
