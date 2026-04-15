@@ -590,9 +590,46 @@ def cmd_agent(args):
         db.commit()
         print(f"OK: Heartbeat recorded for {args[1]}")
 
+    elif action == "heartbeat-run":
+        if len(args) < 3:
+            print("Usage: agent heartbeat-run <agent> <status> [--session <id>] [--exit <n>]")
+            print("  status: queued|running|succeeded|failed|cancelled|timed_out")
+            return
+        agent_name = args[1]
+        status = args[2]
+        if status not in ("queued", "running", "succeeded", "failed", "cancelled", "timed_out"):
+            print(f"Invalid status '{status}'")
+            return
+        session_id = None
+        exit_code = None
+        in_tok = out_tok = cost_cents = None
+        started_at = None
+        i = 3
+        while i < len(args):
+            if args[i] == "--session" and i + 1 < len(args): session_id = args[i + 1]; i += 2
+            elif args[i] == "--exit" and i + 1 < len(args): exit_code = int(args[i + 1]); i += 2
+            elif args[i] == "--in-tok" and i + 1 < len(args): in_tok = int(args[i + 1]); i += 2
+            elif args[i] == "--out-tok" and i + 1 < len(args): out_tok = int(args[i + 1]); i += 2
+            elif args[i] == "--cost-cents" and i + 1 < len(args): cost_cents = int(args[i + 1]); i += 2
+            elif args[i] == "--started" and i + 1 < len(args): started_at = args[i + 1]; i += 2
+            else: i += 1
+        agent = resolve_agent(db, agent_name)
+        if not agent:
+            print(f"CONFLICT: Agent '{agent_name}' not found")
+            return
+        finished_at = now() if status in ("succeeded", "failed", "cancelled", "timed_out") else None
+        db.execute("""INSERT INTO heartbeat_runs
+                      (id, company_id, agent_id, status, started_at, finished_at, session_id,
+                       exit_code, usage_input_tokens, usage_output_tokens, usage_cost_cents)
+                      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                   (uid(), company_id, agent["id"], status, started_at or now(), finished_at,
+                    session_id, exit_code, in_tok, out_tok, cost_cents))
+        db.commit()
+        print(f"OK: heartbeat_run recorded for {agent_name} (status={status})")
+
     else:
         print(f"Unknown agent action: {action}")
-        print("Valid actions: list, status, pause, resume, heartbeat")
+        print("Valid actions: list, status, pause, resume, heartbeat, heartbeat-run")
         sys.exit(1)
 
 # ═══════════════════════════════════════════════════════════════════════════════
